@@ -1,0 +1,22 @@
+html, body {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+} 
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+#map {
+    flex: 1;   
+}
+
+.timeline {
+    width: 200px;
+    height: 90%;
+    background-color: red;
+    position: fixed;
+    top: 50%;
+}
