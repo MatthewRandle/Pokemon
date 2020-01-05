@@ -23,7 +23,6 @@ body {
 .timeline {
   width: 200px;
   height: 90%;
-  background-color: red;
   position: fixed;
   top: 50%;
 }
