@@ -1,5 +1,6 @@
 <?php
-    require "twitteroauth/autoload.php";
+    require "./twitteroauth/autoload.php";
+    use Abraham\TwitterOAuth\TwitterOAuth;
 
     $consumer_key = "BU43RxgCZpHXQnSQvX0ZIgJjo ";
     $consumer_secret = "2LT66G4aegvljkY28e7uF18rsi2w6fWBPEIlsH7mMyhLFWTYBb";
