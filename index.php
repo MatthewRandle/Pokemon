@@ -2,7 +2,7 @@
     require "./twitteroauth/autoload.php";
     use Abraham\TwitterOAuth\TwitterOAuth;
 
-    $consumer_key = "BU43RxgCZpHXQnSQvX0ZIgJjo ";
+    $consumer_key = "BU43RxgCZpHXQnSQvX0ZIgJjo";
     $consumer_secret = "2LT66G4aegvljkY28e7uF18rsi2w6fWBPEIlsH7mMyhLFWTYBb";
     $accessToken = "1213860625941614592-iaop8j2wBPVBjIBLEO07lGSzVQIIVP";
     $accessTokenSecret = "5JzYK84ho44eKgfgTQtXBs45h424JMHkpTET30rhceulw";
