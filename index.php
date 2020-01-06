@@ -8,11 +8,13 @@
     $accessTokenSecret = "5JzYK84ho44eKgfgTQtXBs45h424JMHkpTET30rhceulw";
 
     $connection = new TwitterOAuth($consumer_key, $consumer_secret, $accessToken, $accessTokenSecret);
-    $content = $connection->get("account/verify_credentials");
-
-    echo "<pre>";
-    print_r($content);
-    echo "</pre>";
+    $tweets = $connection->get("search/tweets", array(
+        "q" => "#Pokemon", 
+        "lang" => "en", 
+        "result_type" => "recent", 
+        "geocode" => "53.8175,3.0357,500mi",
+        "count" => "50",
+        "tweet_mode" => "extended"));
 ?>
 
 <!DOCTYPE html>
@@ -23,14 +25,41 @@
     </head>
 
     <body>
-        <div class="navbar">
+        <!-- <div class="navbar">
             <p>Pokemon</p>
             <p>Sign In with Twitter</p>
-        </div>
+        </div> -->
 
         <div class="timeline">
 
         </div>
+
+		<?php
+		echo "<pre>";
+		print_r($tweets);
+		echo "</pre>";
+            for($i = 0; $i < count($tweets->statuses); $i++) {
+				if(isset($tweets->statuses[$i]->retweeted_status)) continue;
+				
+				$text = $tweets->statuses[$i]->full_text;
+				$user = $tweets->statuses[$i]->user;
+				$timestamp = $tweets->statuses[$i]->created_at;
+				$displayName = $user->name;
+				$userName = $user->screen_name;
+				$profilePicture = $user->profile_image_url;
+				$geo = $tweets->statuses[$i]->geo;
+				$coordinates = $geo ? $geo->coordinates : null;
+
+				/* echo 
+					"<div>
+						<h2>$displayName</h2>
+						<h3>$username</h3>
+						<img src='$profilePicture' alt='Avatar' />
+						<p>$text</p>
+						<p>".(is_array($coordinates) ? implode(" ", $coordinates) : "")."</p>
+					</div>"; */
+			}
+        ?>
 
         <div id="map">
             
