@@ -12,69 +12,94 @@
         "q" => "#Pokemon", 
         "lang" => "en", 
         "result_type" => "recent", 
-        "geocode" => "53.8175,3.0357,500mi",
-        "count" => "50",
+        "geocode" => "53.8175,-3.0357,250mi",
+        "count" => "100",
         "tweet_mode" => "extended"));
 ?>
 
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="stylesheets/css/Index.css" />
-        <link rel="stylesheet" href="stylesheets/css/Navbar.css" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab:700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="stylesheets/css/Index.css?ts=<?=time()?>" />
+        <link rel="stylesheet" type="text/css" href="stylesheets/css/Navbar.css" />
+        <link rel="stylesheet" type="text/css "href="stylesheets/css/Reset.css" />
+        <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css" integrity="sha384-REHJTs1r2ErKBuJB0fCK99gCYsVjwxHrSU0N7I1zl9vZbggVJXRMsv/sLlOAGb4M" crossorigin="anonymous">
     </head>
 
     <body>
-        <!-- <div class="navbar">
+        <div class="navbar">
             <p>Pokemon</p>
             <p>Sign In with Twitter</p>
-        </div> -->
-
-        <div class="timeline">
-
         </div>
 
-		<?php
-		echo "<pre>";
-		print_r($tweets);
-		echo "</pre>";
-            for($i = 0; $i < count($tweets->statuses); $i++) {
-				if(isset($tweets->statuses[$i]->retweeted_status)) continue;
-				
-				$text = $tweets->statuses[$i]->full_text;
-				$user = $tweets->statuses[$i]->user;
-				$timestamp = $tweets->statuses[$i]->created_at;
-				$displayName = $user->name;
-				$userName = $user->screen_name;
-				$profilePicture = $user->profile_image_url;
-				$geo = $tweets->statuses[$i]->geo;
-				$coordinates = $geo ? $geo->coordinates : null;
+        <div id="distance--hidden">
+            <p></p>
+        </div>
 
-				/* echo 
-					"<div>
-						<h2>$displayName</h2>
-						<h3>$username</h3>
-						<img src='$profilePicture' alt='Avatar' />
-						<p>$text</p>
-						<p>".(is_array($coordinates) ? implode(" ", $coordinates) : "")."</p>
-					</div>"; */
-			}
-        ?>
+        <div class="timeline">
+            <?php            
+                $locations = array();
+
+                for($i = 0; $i < count($tweets->statuses); $i++) {
+                    if(isset($tweets->statuses[$i]->retweeted_status)) continue;
+
+                    
+                    $text = $tweets->statuses[$i]->full_text;
+                    $user = $tweets->statuses[$i]->user;
+                    $retweets = $tweets->statuses[$i]->retweet_count;
+                    $likes = $tweets->statuses[$i]->favorite_count;
+                    $timestamp = $tweets->statuses[$i]->created_at;
+                    $displayName = $user->name;
+                    $profilePicture = $user->profile_image_url;
+                    $place = $tweets->statuses[$i]->place;
+                    $coordinates = $place ? $place->bounding_box->coordinates[0][0] : null;
+                    
+                    //if tweet has coordinates, add them to the locations array
+                    if(isset($coordinates[0]) && isset($coordinates[1])) {
+                        $locations[] = array(
+                            "lat" => $coordinates[1], 
+                            "long" => $coordinates[0],
+                            "username" => $displayName,
+                            "text" => $text,
+                            "profilePicture" => $profilePicture
+                        );
+                    }
+
+                    echo 
+                        "<div class='tweet'>
+                            <div><img src='$profilePicture' alt='Avatar' /></div>
+
+                            <div class='tweet_content'>
+                                <h2 class='tweet_username'>$displayName</h2>
+
+                                <p class='tweet_text'>$text</p>
+
+                                <div class='tweet_bottom'>
+                                    <p><i class='fas fa-retweet'></i> $retweets</p>
+                                    <p><i class='fas fa-heart'></i> $likes</p>
+                                </div>
+                            </div>
+                        </div>";
+
+                        /* "<div>
+                            <h2>$displayName</h2>
+                            <h3>@$username</h3>
+                            <img src='$profilePicture' alt='Avatar' />
+                            <p>$text</p>
+                            <p>".(is_array($coordinates) ? implode(" ", $coordinates) : "")."</p>
+                        </div>"; */
+                }
+            ?>
+        </div>		
 
         <div id="map">
             
         </div>
 
-        <!-- <script>
-        var map;
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 54.9783, lng: -1.6178},
-            zoom: 8
-            });
-        }
-        </script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNLjoxj2VIWiZJE_54MRL0pO-ruGVB7B4&callback=initMap" async defer></script>
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script> -->
+        <script type="text/javascript">var locations = <?php echo json_encode($locations); ?>;</script>
+        <script src="./index.js" type="text/javascript"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNLjoxj2VIWiZJE_54MRL0pO-ruGVB7B4&callback=initMap&libraries=geometry" async defer></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     </body>
 </html>
